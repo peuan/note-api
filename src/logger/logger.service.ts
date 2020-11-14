@@ -1,6 +1,5 @@
 import { LoggerService, Injectable, Scope } from '@nestjs/common';
 import { createLogger, Logger, transports } from 'winston';
-import { ElasticsearchTransport } from 'winston-elasticsearch';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class AppLogger implements LoggerService {
@@ -16,13 +15,6 @@ export class AppLogger implements LoggerService {
       transports: [
         new transports.File({ filename: 'logs/log' }),
         new transports.Console(),
-        new ElasticsearchTransport({
-          clientOpts: {
-            node: 'http://localhost:9200',
-            name: 'elasticsearch'
-          },
-        
-        }),
       ],
     });
   }

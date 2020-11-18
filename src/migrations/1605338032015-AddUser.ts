@@ -5,9 +5,9 @@ import { User } from 'src/modules/auth/entities/user.entity';
 import { Scope } from 'src/common/enums/scope.enum';
 import { genSalt, hash } from 'bcrypt';
 
-export class AddUser1598681114414 implements MigrationInterface {
+export class AddUser1605338032015 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const userRepository = queryRunner.connection.getRepository(User);
+    const userRepository = queryRunner.manager.getRepository(User);
     const salt = await genSalt();
     const hashPassword = await hash(process.env.ADMIN_PASSWORD, salt);
 

@@ -31,13 +31,4 @@ export class AuthController {
   getProfile(@CurrentUser() user: ICurrentUser) {
     return user;
   }
-
-  @Post('query')
-  @HttpCode(HttpStatus.OK)
-  getQuery(
-    @Body()
-    queryOptionDto: QueryOptionDto,
-  ) {
-    return queryOptionDto;
-  }
 }

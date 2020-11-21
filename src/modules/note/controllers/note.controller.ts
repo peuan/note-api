@@ -32,7 +32,7 @@ export class NoteController {
   }
 
   @Auth()
-  @Post('note')
+  @Post()
   addNote(@Body() noteDto: CreateNoteDto, @CurrentUser() user: User) {
     return this.noteService.addNote(user, noteDto);
   }

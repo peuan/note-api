@@ -32,11 +32,18 @@ export class AuthController {
   getProfile(@CurrentUser() user: ICurrentUser) {
     return user;
   }
+
   @Post('register')
   userRegister(
     @Body()
     registerDto: RegisterDto,
   ) {
     return this.authService.userRegister(registerDto);
+  }
+
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  userLogin(@Body() loginDto: LoginDto) {
+    return this.authService.userLogin(loginDto);
   }
 }

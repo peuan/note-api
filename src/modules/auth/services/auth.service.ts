@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
@@ -10,6 +14,7 @@ import { RedisService } from 'src/redis/redis.service';
 import { User } from '../entities/user.entity';
 import { Scope } from 'src/common/enums/scope.enum';
 import { LoginResponse } from '../classes/login-response.classes';
+import { RegisterDto } from '../dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -68,5 +73,18 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async userRegister(registerDto: RegisterDto) {
+    const user = await this.userRepository.findByUsername(registerDto.username);
+
+    if (user) {
+      throw new ConflictException({ code: 'username_already_exist' });
+    }
+
+    const newUser = this.userRepository.create(registerDto);
+    await newUser.hashPassword();
+
+    return await this.userRepository.save(newUser);
   }
 }

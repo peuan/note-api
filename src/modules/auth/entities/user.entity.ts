@@ -1,6 +1,6 @@
 import { Column, Entity } from 'typeorm';
 import { ApiHideProperty } from '@nestjs/swagger';
-import { hash } from 'bcrypt';
+import { genSalt, hash } from 'bcrypt';
 
 import { Base } from 'src/common/entitys/base.entity';
 import { Scope } from 'src/common/enums/scope.enum';
@@ -14,13 +14,22 @@ export class User extends Base {
 
   @Exclude()
   @ApiHideProperty()
-  @Column({ select: false, nullable: true })
+  @Column()
   password: string;
 
   @Exclude()
   @ApiHideProperty()
-  @Column({ type: 'varchar', length: 255, nullable: true, select: false })
+  @Column({ type: 'varchar', length: 255 })
   salt: string;
+
+  @Column({ type: 'varchar', length: 100 })
+  firstName: string;
+
+  @Column({ type: 'varchar', length: 100 })
+  lastName: string;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  email?: string;
 
   @Exclude()
   @Column({ type: 'jsonb', nullable: true })
@@ -29,5 +38,10 @@ export class User extends Base {
   async validatePassword(passowrd: string): Promise<boolean> {
     const hashPassword = await hash(passowrd, this.salt);
     return hashPassword === this.password;
+  }
+
+  async hashPassword() {
+    this.salt = await genSalt();
+    this.password = await hash(this.password, this.salt);
   }
 }

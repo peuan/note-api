@@ -15,6 +15,9 @@ export class AddUser1605338032015 implements MigrationInterface {
       username: process.env.ADMIN_USERNAME,
       password: hashPassword,
       salt,
+      firstName: 'admin',
+      lastName: 'admin',
+      email: 'admin@gmail.com',
       scopes: [Scope.SUPER_ADMIN],
       enable: true,
     });

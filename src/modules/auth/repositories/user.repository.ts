@@ -16,7 +16,7 @@ export class UserRepository extends Repository<User> {
 
   async selectUser(username: string) {
     return await this.findOne({
-      select:[
+      select: [
         'username',
         'password',
         'salt',
@@ -25,9 +25,17 @@ export class UserRepository extends Repository<User> {
         'scopes',
         'updateDate',
       ],
-      where:{
-        username
-      }
-    })
+      where: {
+        username,
+      },
+    });
+  }
+
+  async findByUsername(username: string) {
+    return await this.findOne({
+      where: {
+        username,
+      },
+    });
   }
 }

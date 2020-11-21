@@ -87,4 +87,12 @@ export class AuthService {
 
     return await this.userRepository.save(newUser);
   }
+
+  async userLogin(loginDto: LoginDto) {
+    const user = await this.userRepository.validateUserPassword(loginDto);
+    if (!user) {
+      throw new UnauthorizedException({ code: 'invalid_username_or_password' });
+    }
+    return await this.genToken(user);
+  }
 }

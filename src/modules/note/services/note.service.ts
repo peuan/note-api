@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/modules/auth/entities/user.entity';
+import { CreateNoteDto } from '../dto/note.dto';
 import { NotePrivacy } from '../enums/note.enum';
 import { NoteRepository } from '../repositories/note.repository';
 
@@ -33,5 +34,12 @@ export class NoteService {
       throw new ForbiddenException({ code: 'note_not_have_permission' });
     }
     return note;
+  }
+
+  async addNote(user: User, noteDto: CreateNoteDto) {
+    return await this.noteRepository.save({
+      user: user,
+      ...noteDto,
+    });
   }
 }

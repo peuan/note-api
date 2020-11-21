@@ -23,9 +23,9 @@ export class Note extends Base {
   @Column()
   privacy: NotePrivacy;
 
-  @Column()
+  @Column({ default: NoteViews.ALL })
   views: NoteViews;
 
-  @Column()
+  @Column({ default: NoteOptions.ACTIVE })
   options: NoteOptions;
 }

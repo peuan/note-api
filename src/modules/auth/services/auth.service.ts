@@ -82,7 +82,10 @@ export class AuthService {
       throw new ConflictException({ code: 'username_already_exist' });
     }
 
-    const newUser = this.userRepository.create(registerDto);
+    const newUser = this.userRepository.create({
+      ...registerDto,
+      scopes: [Scope.USER],
+    });
     await newUser.hashPassword();
 
     return await this.userRepository.save(newUser);

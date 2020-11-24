@@ -6,14 +6,18 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { Swagger } from './common/swagger';
 import { AppLogger } from './logger/logger.service';
 
+
+
 async function bootstrap() {
+
   const app = await NestFactory.create(AppModule);
-  app.use(RequestIdMiddleware);
-  app.useLogger(new AppLogger());
+  app.use(RequestIdMiddleware)
+  app.useLogger(new AppLogger())
   app.enableCors();
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   new Swagger(app);
+
 
   await app.listen(5000);
 }

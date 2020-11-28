@@ -67,7 +67,7 @@ export class AuthService {
     this.redisService.setRefreshToken(user.id, refreshTokenId);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, salt, ...responseUser } = user;
+    const { password, salt, username, ...responseUser } = user;
     return {
       user: responseUser as User,
       accessToken,
@@ -97,5 +97,9 @@ export class AuthService {
       throw new UnauthorizedException({ code: 'invalid_username_or_password' });
     }
     return await this.genToken(user);
+  }
+
+  async getUserById(userId: string) {
+    return await this.userRepository.findOne(userId);
   }
 }

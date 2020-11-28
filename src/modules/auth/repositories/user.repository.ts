@@ -19,6 +19,8 @@ export class UserRepository extends Repository<User> {
       select: [
         'username',
         'password',
+        'firstName',
+        'lastName',
         'salt',
         'id',
         'createDate',

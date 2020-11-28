@@ -20,11 +20,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: IJwtPayload) {
     const scopes = await this.redisService.getScopes(payload.sub, payload.jti);
-
     if (!scopes) {
       throw new UnauthorizedException('Unauthorized');
     }
-    
+
     return { id: payload.sub, scopes };
   }
 }

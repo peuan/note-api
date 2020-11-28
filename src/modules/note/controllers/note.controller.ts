@@ -11,6 +11,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { Scope } from 'src/common/enums/scope.enum';
 import { User } from 'src/modules/auth/entities/user.entity';
 import { CreateNoteDto } from '../dto/note.dto';
 import { NoteService } from '../services/note.service';

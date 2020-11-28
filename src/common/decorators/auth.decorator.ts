@@ -14,7 +14,7 @@ export function Auth(scopes?: Scope[]) {
   if (scopes) {
     return applyDecorators(
       Scopes(scopes),
-      UseGuards(AuthGuard('jwt'), ScopesGuard),
+      UseGuards(AuthGuard('jwt'),ScopesGuard),
       ApiBearerAuth('Authorization'),
       ApiUnauthorizedResponse({ description: 'Unauthorized' }),
       ApiForbiddenResponse({

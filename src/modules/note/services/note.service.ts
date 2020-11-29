@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/modules/auth/entities/user.entity';
-import { CreateNoteDto } from '../dto/note.dto';
+import { CreateNoteDto, UpdateNoteDto } from '../dto/note.dto';
 import { Tag } from '../entities/tag.entity';
 import { NotePrivacy } from '../enums/note.enum';
 import { NoteRepository } from '../repositories/note.repository';
@@ -40,11 +40,14 @@ export class NoteService {
     return note;
   }
 
-  async addNote(user: User, noteDto: CreateNoteDto) {
+  async addNote(user: User, createNoteDto: CreateNoteDto) {
     let tags: Tag[] = [];
-    if (noteDto.tagIds) {
-      tags = await this.tagRepository.findTagIdsByUser(user, noteDto.tagIds);
-      if (tags.length < noteDto.tagIds.length) {
+    if (createNoteDto.tagIds) {
+      tags = await this.tagRepository.findTagIdsByUser(
+        user,
+        createNoteDto.tagIds,
+      );
+      if (tags.length < createNoteDto.tagIds.length) {
         throw new NotFoundException({ code: 'tag_not_found' });
       }
     }
@@ -52,7 +55,34 @@ export class NoteService {
     return await this.noteRepository.save({
       user: user,
       tags,
-      ...noteDto,
+      ...createNoteDto,
+    });
+  }
+
+  async updateNote(user: User, noteId: string, updateNoteDto: UpdateNoteDto) {
+    let tags: Tag[] = [];
+    const note = await this.noteRepository.findNoteByUser(user, noteId);
+
+    if (!note) {
+      throw new NotFoundException({ code: 'note_not_found' });
+    }
+
+    if (updateNoteDto.tagIds) {
+      tags = await this.tagRepository.findTagIdsByUser(
+        user,
+        updateNoteDto.tagIds,
+      );
+      if (tags.length < updateNoteDto.tagIds.length) {
+        throw new NotFoundException({ code: 'tag_not_found' });
+      }
+    }
+
+    return await this.noteRepository.save({
+      ...note,
+      user: user,
+      tags,
+      ...updateNoteDto,
+      type: note.type,
     });
   }
 }

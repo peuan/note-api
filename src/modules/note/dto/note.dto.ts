@@ -15,3 +15,15 @@ export class CreateNoteDto {
   @IsString({ each: true })
   tagIds?: string[];
 }
+
+export class UpdateNoteDto {
+  @IsString()
+  note: string;
+
+  @IsEnum(NotePrivacy)
+  privacy: NotePrivacy;
+
+  @IsOptional()
+  @IsString({ each: true })
+  tagIds?: string[];
+}

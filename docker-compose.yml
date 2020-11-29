@@ -36,8 +36,6 @@ services:
     command: redis-server --requirepass ${REDIS_PASSWORD}
     networks:
       - note
-      
-
 
 networks:
   note:
@@ -46,4 +44,3 @@ volumes:
   redis:
   postgres:
   pgadmin:
-

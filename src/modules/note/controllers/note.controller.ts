@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UseInterceptors,
 } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -13,7 +14,7 @@ import { Auth } from 'src/common/decorators/auth.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { Scope } from 'src/common/enums/scope.enum';
 import { User } from 'src/modules/auth/entities/user.entity';
-import { CreateNoteDto } from '../dto/note.dto';
+import { CreateNoteDto, UpdateNoteDto } from '../dto/note.dto';
 import { NoteService } from '../services/note.service';
 
 @Controller('notes')
@@ -34,7 +35,17 @@ export class NoteController {
 
   @Auth()
   @Post()
-  addNote(@Body() noteDto: CreateNoteDto, @CurrentUser() user: User) {
-    return this.noteService.addNote(user, noteDto);
+  addNote(@Body() createNoteDto: CreateNoteDto, @CurrentUser() user: User) {
+    return this.noteService.addNote(user, createNoteDto);
+  }
+
+  @Auth()
+  @Put(':noteId')
+  updateNote(
+    @Param('noteId') noteId: string,
+    @Body() updateNoteDto: UpdateNoteDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.noteService.updateNote(user, noteId, updateNoteDto);
   }
 }

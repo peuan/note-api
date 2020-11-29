@@ -58,10 +58,7 @@ export class TagService {
       const children = await this.entityManager
         .getTreeRepository(Tag)
         .findDescendantsTree(parent);
-      response.push({
-        ...parent,
-        children,
-      });
+      response.push(children);
     }
     return response;
   }

@@ -1,4 +1,4 @@
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
 import { NotePrivacy, NoteType } from '../enums/note.enum';
 
 export class CreateNoteDto {
@@ -10,4 +10,8 @@ export class CreateNoteDto {
 
   @IsEnum(NotePrivacy)
   privacy: NotePrivacy;
+
+  @IsOptional()
+  @IsString({ each: true })
+  tagIds?: string[];
 }

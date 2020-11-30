@@ -1,9 +1,14 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import {
+  getManyResponseFor,
+  PaginationDto,
+} from 'src/common/dto/pagination.dto';
 import { User } from 'src/modules/auth/entities/user.entity';
 import { CreateTagDto } from '../dto/tag.dto';
+import { Tag } from '../entities/tag.entity';
 import { TagService } from '../services/tag.service';
 
 @Controller('tags')
@@ -30,10 +35,12 @@ export class TagController {
 
   @Auth()
   @Get('')
+  @ApiOkResponse({ type: getManyResponseFor(Tag) })
   getTags(
     @CurrentUser()
     user: User,
+    @Query() paginationDto: PaginationDto,
   ) {
-    return this.tagService.getTags(user);
+    return this.tagService.getTags(user, paginationDto);
   }
 }

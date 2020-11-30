@@ -1,20 +1,11 @@
-import {
-  Body,
-  ClassSerializerInterceptor,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Put,
-  UseInterceptors,
-} from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
-import { Scope } from 'src/common/enums/scope.enum';
+import { getManyResponseFor, PaginationDto } from 'src/common/dto/pagination.dto';
 import { User } from 'src/modules/auth/entities/user.entity';
 import { CreateNoteDto, UpdateNoteDto } from '../dto/note.dto';
+import { Note } from '../entities/note.entity';
 import { NoteService } from '../services/note.service';
 
 @Controller('notes')
@@ -47,5 +38,16 @@ export class NoteController {
     @CurrentUser() user: User,
   ) {
     return this.noteService.updateNote(user, noteId, updateNoteDto);
+  }
+
+  @Auth()
+  @Get('')
+  @ApiOkResponse({ type: getManyResponseFor(Note) })
+  getNotes(
+    @Query() paginationDto: PaginationDto,
+    @CurrentUser()
+    user: User,
+  ) {
+    return this.noteService.getNotes(user, paginationDto);
   }
 }

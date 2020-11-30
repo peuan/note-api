@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { paginate } from 'nestjs-typeorm-paginate';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { User } from 'src/modules/auth/entities/user.entity';
 import { EntityManager, IsNull } from 'typeorm';
-import { child } from 'winston';
 import { CreateTagDto } from '../dto/tag.dto';
 import { Tag } from '../entities/tag.entity';
 import { TagRepository } from '../repositories/tag.repository';
-
 @Injectable()
 export class TagService {
   constructor(
@@ -16,7 +16,7 @@ export class TagService {
   ) {}
 
   async addTag(user: User, createTagDto: CreateTagDto) {
-    const findTag = await this.tagRepository.findOneTagByUser(
+    const findTag = await this.tagRepository.findByTagAndUser(
       user,
       createTagDto.tag,
     );
@@ -46,20 +46,23 @@ export class TagService {
     return tag;
   }
 
-  async getTags(user: User, start = 0, limit = 10) {
+  async getTags(user: User, { page, limit }: PaginationDto) {
     const response = [];
-    const parents = await this.tagRepository.find({
-      where: { user, parent: IsNull() },
-      skip: start,
-      take: limit,
-    });
 
-    for await (const parent of parents) {
+    const manyResponse = await paginate(
+      this.tagRepository,
+      { page, limit },
+      {
+        where: { user, parent: IsNull() },
+      },
+    );
+
+    for await (const parent of manyResponse.items) {
       const children = await this.entityManager
         .getTreeRepository(Tag)
         .findDescendantsTree(parent);
       response.push(children);
     }
-    return response;
+    return { ...manyResponse, items: response };
   }
 }

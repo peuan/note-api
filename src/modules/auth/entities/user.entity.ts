@@ -1,4 +1,4 @@
-import { Column, Entity, Exclusion } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { ApiHideProperty } from '@nestjs/swagger';
 import { genSalt, hash } from 'bcrypt';
 

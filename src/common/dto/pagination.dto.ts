@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IPaginationLinks, IPaginationMeta } from 'nestjs-typeorm-paginate';
+import { IPaginationMeta } from 'nestjs-typeorm-paginate';
 
 export enum OrderBy {
   DESC = 'DESC',
@@ -31,26 +31,10 @@ class PaginationMeta implements IPaginationMeta {
   currentPage: number;
 }
 
-class PaginationLinks implements IPaginationLinks {
-  @ApiPropertyOptional()
-  first?: string;
-
-  @ApiPropertyOptional()
-  previous?: string;
-
-  @ApiPropertyOptional()
-  next?: string;
-
-  @ApiPropertyOptional()
-  last?: string;
-}
-
 export class GetManyResponse<Entity> {
   readonly items: Entity[];
 
   readonly meta: PaginationMeta;
-
-//   readonly links: PaginationLinks;
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types

@@ -1,6 +1,22 @@
 version: '3.3'
 
 services:
+  api-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    user: node
+    working_dir: /opt/app
+    command: npm run start:debug
+    volumes:
+      - ./:/opt/app
+      # - /opt/app/node_modules/
+    networks:
+      - note
+    depends_on:
+      - postgres
+      - redis
+
   postgres:
     container_name: postgres_note_container
     image: postgres

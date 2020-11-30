@@ -15,7 +15,7 @@ export class TagService {
     private entityManager: EntityManager,
   ) {}
 
-  async addTag(user: User, createTagDto: CreateTagDto) {
+  async addTag(user: User, createTagDto: CreateTagDto):Promise<Tag> {
     const findTag = await this.tagRepository.findByTagAndUser(
       user,
       createTagDto.tag,

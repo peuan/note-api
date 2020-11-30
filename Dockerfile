@@ -1,7 +1,3 @@
-FROM node:12.6-slim
-# RUN npm install -g --unsafe-perm prisma2@2.0.0-preview-12
+FROM node:12.18.3-buster-slim
 
-# RUN mkdir -p /opt/app
-# WORKDIR /opt/app
-# COPY package.json /opt/app
-# RUN npm install
+RUN apt-get update && apt-get install -y procps

@@ -4,13 +4,13 @@ import { Tag } from '../entities/tag.entity';
 
 @EntityRepository(Tag)
 export class TagRepository extends Repository<Tag> {
-  async findOneTagByUser(user: User, tag: string) {
+  async findByTagAndUser(user: User, tag: string) {
     return await this.findOne({
       where: { user, tag },
     });
   }
 
-  async findTagIdsByUser(user: User, tagIds: string[]) {
+  async findTagฺByIdsAndUser(user: User, tagIds: string[]) {
     return await this.findByIds(tagIds, { where: { user: user } });
   }
 }

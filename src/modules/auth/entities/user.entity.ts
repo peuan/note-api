@@ -1,4 +1,4 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Exclusion } from 'typeorm';
 import { ApiHideProperty } from '@nestjs/swagger';
 import { genSalt, hash } from 'bcrypt';
 
@@ -28,6 +28,7 @@ export class User extends Base {
   @Column({ type: 'varchar', length: 100 })
   lastName: string;
 
+  @Exclude()
   @Column({ type: 'varchar', length: 100, nullable: true })
   email?: string;
 
@@ -35,8 +36,8 @@ export class User extends Base {
   @Column({ type: 'jsonb', nullable: true })
   scopes: Scope[];
 
-  async validatePassword(passowrd: string): Promise<boolean> {
-    const hashPassword = await hash(passowrd, this.salt);
+  async validatePassword(password: string): Promise<boolean> {
+    const hashPassword = await hash(password, this.salt);
     return hashPassword === this.password;
   }
 

@@ -5,8 +5,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { paginate } from 'nestjs-typeorm-paginate';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { User } from 'src/modules/auth/entities/user.entity';
 import { CreateNoteDto, UpdateNoteDto } from '../dto/note.dto';
+import { Note } from '../entities/note.entity';
 import { Tag } from '../entities/tag.entity';
 import { NotePrivacy } from '../enums/note.enum';
 import { NoteRepository } from '../repositories/note.repository';
@@ -43,7 +46,7 @@ export class NoteService {
   async addNote(user: User, createNoteDto: CreateNoteDto) {
     let tags: Tag[] = [];
     if (createNoteDto.tagIds) {
-      tags = await this.tagRepository.findTagIdsByUser(
+      tags = await this.tagRepository.findTagฺByIdsAndUser(
         user,
         createNoteDto.tagIds,
       );
@@ -61,14 +64,14 @@ export class NoteService {
 
   async updateNote(user: User, noteId: string, updateNoteDto: UpdateNoteDto) {
     let tags: Tag[] = [];
-    const note = await this.noteRepository.findNoteByUser(user, noteId);
+    const note = await this.noteRepository.findNoteByIdAndUser(user, noteId);
 
     if (!note) {
       throw new NotFoundException({ code: 'note_not_found' });
     }
 
     if (updateNoteDto.tagIds) {
-      tags = await this.tagRepository.findTagIdsByUser(
+      tags = await this.tagRepository.findTagฺByIdsAndUser(
         user,
         updateNoteDto.tagIds,
       );
@@ -84,5 +87,14 @@ export class NoteService {
       ...updateNoteDto,
       type: note.type,
     });
+  }
+
+  async getNotes(user: User, { page, limit }: PaginationDto) {
+    const noteQueryBuilder = this.noteRepository
+      .createQueryBuilder('note')
+      .leftJoinAndSelect('note.user', 'user','user.id = :userId', { userId: user.id })
+      .andWhere('user.id = :userId', { userId: user.id });
+
+    return await paginate<Note>(noteQueryBuilder, { page, limit });
   }
 }

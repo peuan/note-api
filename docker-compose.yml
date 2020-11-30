@@ -44,12 +44,13 @@ services:
 
   redis:
     container_name: redis_note_container
-    image: redis:latest
+    image: redis:6.0-buster
     ports:
       - 6379:6379
     volumes:
       - redis:/data
     command: redis-server --requirepass ${REDIS_PASSWORD}
+    hostname: ${REDIS_HOST}
     networks:
       - note
 

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
@@ -42,5 +50,11 @@ export class TagController {
     @Query() paginationDto: PaginationDto,
   ) {
     return this.tagService.getTags(user, paginationDto);
+  }
+
+  @Auth()
+  @Delete(':tagId')
+  deleteTag(@CurrentUser() user: User, @Param('tagId') tagId: string) {
+    return this.tagService.deleteTag(user, tagId);
   }
 }

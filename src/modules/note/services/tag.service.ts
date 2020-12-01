@@ -15,7 +15,7 @@ export class TagService {
     private entityManager: EntityManager,
   ) {}
 
-  async addTag(user: User, createTagDto: CreateTagDto):Promise<Tag> {
+  async addTag(user: User, createTagDto: CreateTagDto): Promise<Tag> {
     const findTag = await this.tagRepository.findByTagAndUser(
       user,
       createTagDto.tag,
@@ -64,5 +64,15 @@ export class TagService {
       response.push(children);
     }
     return { ...manyResponse, items: response };
+  }
+
+  async deleteTag(user: User, tagId: string) {
+    const tag = await this.tagRepository.findTagByIdAndUser(user, tagId);
+    if (!tag) {
+      throw new NotFoundException({
+        code: 'tag_not_found',
+      });
+    }
+    return await this.tagRepository.delete(tag.id);
   }
 }

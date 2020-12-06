@@ -11,6 +11,9 @@ export class TagRepository extends Repository<Tag> {
   }
 
   async findTagฺByIdsAndUser(user: User, tagIds: string[]) {
+  
     return await this.findByIds(tagIds, { where: { user: user } });
+  
   }
+  
 }

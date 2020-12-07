@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
@@ -48,6 +48,7 @@ export class NoteController {
     @CurrentUser()
     user: User,
   ) {
+    console.log(paginationDto)
     return this.noteService.getNotes(user, paginationDto);
   }
 }

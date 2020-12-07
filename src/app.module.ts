@@ -8,6 +8,7 @@ import { ConfigModule } from './config/config.module';
 import { LoggerModule } from './logger/logger.module';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -16,20 +17,22 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
     DatabaseModule,
     ConfigModule,
     LoggerModule,
+    EventModule,
   ],
   controllers: [],
   providers: [
     {
       provide: APP_PIPE,
-      useClass: ValidationPipe,
+      useValue: new ValidationPipe({ transform: true }),
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor
-    },{
+      useClass: LoggingInterceptor,
+    },
+    {
       provide: APP_FILTER,
-      useClass: AllExceptionsFilter
-    }
+      useClass: AllExceptionsFilter,
+    },
   ],
 })
 export class AppModule {}

@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { paginate } from 'nestjs-typeorm-paginate';
+import { EntityManager, IsNull } from 'typeorm';
+
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { User } from 'src/modules/auth/entities/user.entity';
-import { EntityManager, IsNull } from 'typeorm';
 import { CreateTagDto } from '../dto/tag.dto';
 import { Tag } from '../entities/tag.entity';
 import { TagRepository } from '../repositories/tag.repository';
@@ -73,6 +74,8 @@ export class TagService {
         code: 'tag_not_found',
       });
     }
-    return await this.tagRepository.delete(tag.id);
+    const deleted = await this.tagRepository.delete(tag.id);
+    
+    return deleted;
   }
 }

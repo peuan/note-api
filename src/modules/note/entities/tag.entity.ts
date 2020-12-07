@@ -12,6 +12,7 @@ import {
 @Entity()
 @Tree('nested-set')
 export class Tag extends Base {
+  
   @ManyToOne(() => User)
   user: User;
 

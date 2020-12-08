@@ -1,5 +1,4 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
-import { ApiHideProperty } from '@nestjs/swagger';
 import { Base } from 'src/common/entitys/base.entity';
 import {
   NoteType,
@@ -9,6 +8,7 @@ import {
 } from '../enums/note.enum';
 import { User } from 'src/modules/auth/entities/user.entity';
 import { Tag } from './tag.entity';
+import { UpdateNoteDto } from '../dto/note.dto';
 
 @Entity()
 export class Note extends Base {
@@ -33,4 +33,13 @@ export class Note extends Base {
 
   @Column({ default: NoteOptions.ACTIVE })
   options: NoteOptions;
+
+  updateDetail(updateNoteDto: UpdateNoteDto) {
+    this.privacy = updateNoteDto.privacy;
+    this.note = updateNoteDto.note;
+  }
+
+  updateView(noteView: NoteViews) {
+    this.views = noteView;
+  }
 }

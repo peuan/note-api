@@ -1,5 +1,5 @@
-import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
-import { NotePrivacy, NoteType } from '../enums/note.enum';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { NotePrivacy, NoteType, NoteViews } from '../enums/note.enum';
 
 export class CreateNoteDto {
   @IsString()
@@ -26,4 +26,9 @@ export class UpdateNoteDto {
   @IsOptional()
   @IsString({ each: true })
   tagIds?: string[];
+}
+
+export class UpdateNoteViewDto {
+  @IsEnum(NoteViews)
+  noteView: NoteViews;
 }

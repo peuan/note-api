@@ -2,7 +2,6 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { paginate } from 'nestjs-typeorm-paginate';
@@ -11,7 +10,7 @@ import { User } from 'src/modules/auth/entities/user.entity';
 import { CreateNoteDto, UpdateNoteDto } from '../dto/note.dto';
 import { Note } from '../entities/note.entity';
 import { Tag } from '../entities/tag.entity';
-import { NotePrivacy } from '../enums/note.enum';
+import { NotePrivacy, NoteViews } from '../enums/note.enum';
 import { NoteRepository } from '../repositories/note.repository';
 import { TagRepository } from '../repositories/tag.repository';
 
@@ -80,21 +79,34 @@ export class NoteService {
       }
     }
 
+    note.updateDetail(updateNoteDto);
+
     return await this.noteRepository.save({
       ...note,
-      user: user,
       tags,
-      ...updateNoteDto,
-      type: note.type,
     });
   }
 
   async getNotes(user: User, { page, limit }: PaginationDto) {
     const noteQueryBuilder = this.noteRepository
       .createQueryBuilder('note')
-      .leftJoinAndSelect('note.user', 'user','user.id = :userId', { userId: user.id })
+      .leftJoinAndSelect('note.user', 'user', 'user.id = :userId', {
+        userId: user.id,
+      })
       .andWhere('user.id = :userId', { userId: user.id });
 
     return await paginate<Note>(noteQueryBuilder, { page, limit });
+  }
+
+  async updateNoteView(user: User, noteId: string, noteView: NoteViews) {
+    const note = await this.noteRepository.findNoteByIdAndUser(user, noteId);
+
+    if (!note) {
+      throw new NotFoundException({ code: 'note_not_found' });
+    }
+
+    note.updateView(noteView);
+
+    return await this.noteRepository.save(note);
   }
 }

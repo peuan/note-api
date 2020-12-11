@@ -29,7 +29,7 @@ export class NoteService {
       },
       relations: ['user', 'tags'],
     });
-    
+
     if (!note) {
       throw new NotFoundException({ code: 'note_not_found' });
     }
@@ -92,13 +92,14 @@ export class NoteService {
       .createQueryBuilder('note')
       .addSelect(
         `CASE WHEN "note"."options" = '${NoteOptions.PIN}' THEN 1
-                        ELSE 2
+                        ELSE 0
                     END`,
         'pin',
       )
       .leftJoinAndSelect('note.user', 'user', 'user.id = :userId', {
         userId: user.id,
       })
+      .leftJoinAndSelect('note.tags','tags')
       .andWhere(
         `user.id = :userId 
       and note.views = :noteView

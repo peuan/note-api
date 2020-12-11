@@ -15,7 +15,7 @@ import {
   PaginationDto,
 } from 'src/common/dto/pagination.dto';
 import { User } from 'src/modules/auth/entities/user.entity';
-import { CreateTagDto } from '../dto/tag.dto';
+import { CreateTagDto, SearchTagsDto } from '../dto/tag.dto';
 import { Tag } from '../entities/tag.entity';
 import { TagService } from '../services/tag.service';
 
@@ -47,9 +47,12 @@ export class TagController {
   getTags(
     @CurrentUser()
     user: User,
-    @Query() paginationDto: PaginationDto,
+    @Query() searchTagsDto: SearchTagsDto,
   ) {
-    return this.tagService.getTags(user, paginationDto);
+    if (searchTagsDto.search) {
+      return this.tagService.searchTags(user, searchTagsDto);
+    }
+    return this.tagService.getTags(user, searchTagsDto);
   }
 
   @Auth()

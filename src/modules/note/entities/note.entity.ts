@@ -42,4 +42,8 @@ export class Note extends Base {
   updateView(noteView: NoteViews) {
     this.views = noteView;
   }
+
+  updateOption(options: NoteOptions) {
+    this.options = options;
+  }
 }

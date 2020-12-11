@@ -2,14 +2,13 @@ import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
-import {
-  getManyResponseFor,
-  PaginationDto,
-} from 'src/common/dto/pagination.dto';
+import { getManyResponseFor } from 'src/common/dto/pagination.dto';
 import { User } from 'src/modules/auth/entities/user.entity';
 import {
   CreateNoteDto,
+  QueryNoteDto,
   UpdateNoteDto,
+  UpdateNoteOptionDto,
   UpdateNoteViewDto,
 } from '../dto/note.dto';
 import { Note } from '../entities/note.entity';
@@ -62,13 +61,23 @@ export class NoteController {
   }
 
   @Auth()
+  @Put(':noteId/option')
+  updateOption(
+    @Param('noteId') noteId: string,
+    @Body() updateNoteOptionDto: UpdateNoteOptionDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.noteService.updateNoteOption(
+      user,
+      noteId,
+      updateNoteOptionDto.option,
+    );
+  }
+
+  @Auth()
   @Get('')
   @ApiOkResponse({ type: getManyResponseFor(Note) })
-  getNotes(
-    @Query() paginationDto: PaginationDto,
-    @CurrentUser()
-    user: User,
-  ) {
-    return this.noteService.getNotes(user, paginationDto);
+  getNotes(@Query() queryNoteDto: QueryNoteDto, @CurrentUser() user: User) {
+    return this.noteService.getNotes(user, queryNoteDto);
   }
 }

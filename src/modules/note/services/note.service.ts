@@ -5,12 +5,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { paginate } from 'nestjs-typeorm-paginate';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { User } from 'src/modules/auth/entities/user.entity';
-import { CreateNoteDto, UpdateNoteDto } from '../dto/note.dto';
+import { CreateNoteDto, QueryNoteDto, UpdateNoteDto } from '../dto/note.dto';
 import { Note } from '../entities/note.entity';
 import { Tag } from '../entities/tag.entity';
-import { NotePrivacy, NoteViews } from '../enums/note.enum';
+import { NoteOptions, NotePrivacy, NoteViews } from '../enums/note.enum';
 import { NoteRepository } from '../repositories/note.repository';
 import { TagRepository } from '../repositories/tag.repository';
 
@@ -23,13 +22,14 @@ export class NoteService {
     private tagRepository: TagRepository,
   ) {}
 
-  async getNote(user: User, noteId) {
+  async getNote(user: User, noteId: string) {
     const note = await this.noteRepository.findOne({
       where: {
         id: noteId,
       },
       relations: ['user', 'tags'],
     });
+    
     if (!note) {
       throw new NotFoundException({ code: 'note_not_found' });
     }
@@ -87,13 +87,30 @@ export class NoteService {
     });
   }
 
-  async getNotes(user: User, { page, limit }: PaginationDto) {
+  async getNotes(user: User, { page, limit, noteView }: QueryNoteDto) {
     const noteQueryBuilder = this.noteRepository
       .createQueryBuilder('note')
+      .addSelect(
+        `CASE WHEN "note"."options" = '${NoteOptions.PIN}' THEN 1
+                        ELSE 2
+                    END`,
+        'pin',
+      )
       .leftJoinAndSelect('note.user', 'user', 'user.id = :userId', {
         userId: user.id,
       })
-      .andWhere('user.id = :userId', { userId: user.id });
+      .andWhere(
+        `user.id = :userId 
+      and note.views = :noteView
+
+      `,
+        {
+          userId: user.id,
+          noteView,
+        },
+      )
+      .orderBy('pin', 'DESC')
+      .addOrderBy('note.createDate', 'DESC');
 
     return await paginate<Note>(noteQueryBuilder, { page, limit });
   }
@@ -106,6 +123,18 @@ export class NoteService {
     }
 
     note.updateView(noteView);
+
+    return await this.noteRepository.save(note);
+  }
+
+  async updateNoteOption(user: User, noteId: string, option: NoteOptions) {
+    const note = await this.noteRepository.findNoteByIdAndUser(user, noteId);
+
+    if (!note) {
+      throw new NotFoundException({ code: 'note_not_found' });
+    }
+
+    note.updateOption(option);
 
     return await this.noteRepository.save(note);
   }

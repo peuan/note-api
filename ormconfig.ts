@@ -12,6 +12,9 @@ const ormConfig = {
     cli: {
       migrationsDir: 'src/migrations',
     },
+    extra: {
+      ssl: { rejectUnauthorized: false },
+     },
   }
   
   module.exports = ormConfig

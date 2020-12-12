@@ -6,6 +6,6 @@ import { TAG_DELETED } from 'src/common/constants';
 export class NotificationService {
   @OnEvent(TAG_DELETED, { async: true })
   handleOrderCreatedEvent(tagId: string) {
-   
+    console.log('tagId :>> ', tagId);
   }
 }

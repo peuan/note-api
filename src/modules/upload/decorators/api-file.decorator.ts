@@ -1,6 +1,7 @@
-import { ApiBody } from '@nestjs/swagger';
+import { applyDecorators } from '@nestjs/common';
+import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 
-export const ApiFile = (fileName = 'file'): MethodDecorator => (
+const File = (fileName = 'file'): MethodDecorator => (
   target: any,
   propertyKey: any,
   descriptor: PropertyDescriptor,
@@ -17,3 +18,6 @@ export const ApiFile = (fileName = 'file'): MethodDecorator => (
     },
   })(target, propertyKey, descriptor);
 };
+
+export const ApiFile = (fileName: string) =>
+  applyDecorators(File(fileName), ApiConsumes('multipart/form-data'));

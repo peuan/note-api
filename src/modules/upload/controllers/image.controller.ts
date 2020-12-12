@@ -10,7 +10,7 @@ import {
   Res,
   Req,
 } from '@nestjs/common';
-import { ApiTags, ApiConsumes } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
@@ -28,7 +28,6 @@ export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
   @Auth()
-  @ApiConsumes('multipart/form-data')
   @ApiFile('image')
   @Post('upload')
   @UseInterceptors(
@@ -57,7 +56,6 @@ export class ImageController {
   }
 
   @Auth()
-  @ApiConsumes('multipart/form-data')
   @ApiMultiFile('images')
   @Post('uploads')
   @UseInterceptors(
@@ -94,7 +92,6 @@ export class ImageController {
   }
 
   @Auth()
-  @ApiConsumes('multipart/form-data')
   @ApiFile('image')
   @Post('s3/upload')
   @UseInterceptors(
@@ -118,7 +115,6 @@ export class ImageController {
   }
 
   @Auth()
-  @ApiConsumes('multipart/form-data')
   @ApiMultiFile('images')
   @Post('s3/uploads')
   @UseInterceptors(

@@ -19,10 +19,14 @@ import { ApiFile } from 'src/modules/upload/decorators/api-file.decorator';
 import { ApiMultiFile } from 'src/modules/upload/decorators/api-multi-file.decorator';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { Request, Response } from 'express';
+import { ImageService } from '../services/image.service';
+import { UploadResponse } from '../classes/upload-response.classes';
 
 @Controller('images')
 @ApiTags('images')
 export class ImageController {
+  constructor(private readonly imageService: ImageService) {}
+
   @Auth()
   @ApiConsumes('multipart/form-data')
   @ApiFile('image')
@@ -43,7 +47,7 @@ export class ImageController {
     if (!file) {
       throw new BadRequestException('image_is_required');
     }
-    console.log(req.hostname);
+
     const response = {
       originalname: file.originalname,
       filename: file.filename,
@@ -87,5 +91,50 @@ export class ImageController {
   @Get(':filename')
   async getImage(@Param('filename') filename: string, @Res() res: Response) {
     return res.sendFile(filename, { root: './files/image' });
+  }
+
+  @Auth()
+  @ApiConsumes('multipart/form-data')
+  @ApiFile('image')
+  @Post('s3/upload')
+  @UseInterceptors(
+    FileInterceptor('image', {
+      fileFilter: imageFileFilter,
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
+  async uploadToS3(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<UploadResponse> {
+    if (!file) {
+      throw new BadRequestException('image_is_required');
+    }
+    return await this.imageService.uploadPublicFile(
+      file.buffer,
+      file.originalname,
+    );
+  }
+
+  @Auth()
+  @ApiConsumes('multipart/form-data')
+  @ApiMultiFile('images')
+  @Post('s3/uploads')
+  @UseInterceptors(
+    FilesInterceptor('images', 20, {
+      fileFilter: imageFileFilter,
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
+  async uploadToS3Multiple(
+    @UploadedFiles() files: Express.Multer.File[],
+  ): Promise<UploadResponse[]> {
+    if (!files.length) {
+      throw new BadRequestException('images_is_required');
+    }
+    return await this.imageService.uploadPublicFiles(files);
   }
 }

@@ -91,7 +91,7 @@ export class NoteService {
     const noteQueryBuilder = this.noteRepository
       .createQueryBuilder('note')
       .addSelect(
-        `CASE WHEN "note"."options" = '${NoteOption.PIN}' THEN 1
+        `CASE WHEN "note"."option" = '${NoteOption.PIN}' THEN 1
                         ELSE 0
                     END`,
         'pin',
@@ -102,7 +102,7 @@ export class NoteService {
       .leftJoinAndSelect('note.tags','tags')
       .andWhere(
         `user.id = :userId 
-      and note.views = :noteView
+      and note.noteView = :noteView
 
       `,
         {

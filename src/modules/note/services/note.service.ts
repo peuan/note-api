@@ -9,7 +9,7 @@ import { User } from 'src/modules/auth/entities/user.entity';
 import { CreateNoteDto, QueryNoteDto, UpdateNoteDto } from '../dto/note.dto';
 import { Note } from '../entities/note.entity';
 import { Tag } from '../entities/tag.entity';
-import { NoteOptions, NotePrivacy, NoteViews } from '../enums/note.enum';
+import { NoteOption, NotePrivacy, NoteView } from '../enums/note.enum';
 import { NoteRepository } from '../repositories/note.repository';
 import { TagRepository } from '../repositories/tag.repository';
 
@@ -91,7 +91,7 @@ export class NoteService {
     const noteQueryBuilder = this.noteRepository
       .createQueryBuilder('note')
       .addSelect(
-        `CASE WHEN "note"."options" = '${NoteOptions.PIN}' THEN 1
+        `CASE WHEN "note"."options" = '${NoteOption.PIN}' THEN 1
                         ELSE 0
                     END`,
         'pin',
@@ -116,7 +116,7 @@ export class NoteService {
     return await paginate<Note>(noteQueryBuilder, { page, limit });
   }
 
-  async updateNoteView(user: User, noteId: string, noteView: NoteViews) {
+  async updateNoteView(user: User, noteId: string, noteView: NoteView) {
     const note = await this.noteRepository.findNoteByIdAndUser(user, noteId);
 
     if (!note) {
@@ -128,7 +128,7 @@ export class NoteService {
     return await this.noteRepository.save(note);
   }
 
-  async updateNoteOption(user: User, noteId: string, option: NoteOptions) {
+  async updateNoteOption(user: User, noteId: string, option: NoteOption) {
     const note = await this.noteRepository.findNoteByIdAndUser(user, noteId);
 
     if (!note) {

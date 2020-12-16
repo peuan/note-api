@@ -3,8 +3,8 @@ import { Base } from 'src/common/entitys/base.entity';
 import {
   NoteType,
   NotePrivacy,
-  NoteViews,
-  NoteOptions,
+  NoteView,
+  NoteOption,
 } from '../enums/note.enum';
 import { User } from 'src/modules/auth/entities/user.entity';
 import { Tag } from './tag.entity';
@@ -28,22 +28,22 @@ export class Note extends Base {
   @Column()
   privacy: NotePrivacy;
 
-  @Column({ default: NoteViews.ALL })
-  views: NoteViews;
+  @Column({ default: NoteView.ALL })
+  view: NoteView;
 
-  @Column({ default: NoteOptions.ACTIVE })
-  options: NoteOptions;
+  @Column({ default: NoteOption.ACTIVE })
+  option: NoteOption;
 
   updateDetail(updateNoteDto: UpdateNoteDto) {
     this.privacy = updateNoteDto.privacy;
     this.note = updateNoteDto.note;
   }
 
-  updateView(noteView: NoteViews) {
-    this.views = noteView;
+  updateView(noteView: NoteView) {
+    this.view = noteView;
   }
 
-  updateOption(options: NoteOptions) {
-    this.options = options;
+  updateOption(option: NoteOption) {
+    this.option = option;
   }
 }

@@ -9,12 +9,12 @@ export enum NotePrivacy {
   'PRIVATE' = 'PRIVATE',
 }
 
-export enum NoteOptions {
+export enum NoteOption {
   'ACTIVE' = 'ACTIVE',
   'PIN' = 'PIN',
 }
 
-export enum NoteViews {
+export enum NoteView {
   'TRASH' = 'TRASH',
   'ARCHIVE' = 'ARCHIVE',
   'ALL' = 'ALL',

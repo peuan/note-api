@@ -2,10 +2,10 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import {
-  NoteOptions,
+  NoteOption,
   NotePrivacy,
   NoteType,
-  NoteViews,
+  NoteView,
 } from '../enums/note.enum';
 
 export class CreateNoteDto {
@@ -36,19 +36,19 @@ export class UpdateNoteDto {
 }
 
 export class UpdateNoteViewDto {
-  @IsEnum(NoteViews)
-  noteView: NoteViews;
+  @IsEnum(NoteView)
+  noteView: NoteView;
 }
 
 export class QueryNoteDto extends PaginationDto {
-  @ApiPropertyOptional({ default: NoteViews.ALL })
-  public readonly noteView: NoteViews = NoteViews.ALL;
+  @ApiPropertyOptional({ default: NoteView.ALL })
+  public readonly noteView: NoteView = NoteView.ALL;
 
   @ApiPropertyOptional({ default: NoteType.NOTE })
   public readonly type: NoteType;
 }
 
 export class UpdateNoteOptionDto {
-  @IsEnum(NoteOptions)
-  option: NoteOptions;
+  @IsEnum(NoteOption)
+  option: NoteOption;
 }

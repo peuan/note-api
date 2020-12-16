@@ -29,7 +29,7 @@ export class Note extends Base {
   privacy: NotePrivacy;
 
   @Column({ default: NoteView.ALL })
-  view: NoteView;
+  noteView: NoteView;
 
   @Column({ default: NoteOption.ACTIVE })
   option: NoteOption;
@@ -40,7 +40,7 @@ export class Note extends Base {
   }
 
   updateView(noteView: NoteView) {
-    this.view = noteView;
+    this.noteView = noteView;
   }
 
   updateOption(option: NoteOption) {

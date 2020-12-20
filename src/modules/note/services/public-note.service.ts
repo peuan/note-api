@@ -33,9 +33,7 @@ export class PublicNoteService {
             userId: user.id,
           }),
       )
-      .leftJoinAndSelect('note.user', 'user', 'user.id = :userId', {
-        userId: user.id,
-      })
+      .leftJoinAndSelect('note.user', 'user')
       .andWhere(`note.noteView = :noteView and note.privacy = :notePrivacy`, {
         noteView: NoteView.ALL,
         notePrivacy: NotePrivacy.PUBLIC,
@@ -69,6 +67,7 @@ export class PublicNoteService {
       new NoteLikedEvent(note.id, {
         userId: note.user.id,
         fromUserId: user.id,
+        title: note.note,
       }),
     );
 

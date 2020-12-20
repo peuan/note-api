@@ -1,6 +1,7 @@
 interface NoteLikedPayload {
   userId: string;
   fromUserId: string;
+  title: string;
 }
 
 export class NoteLikedEvent {

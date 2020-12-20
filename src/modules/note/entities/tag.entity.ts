@@ -1,4 +1,4 @@
-import { Base } from 'src/common/entitys/base.entity';
+import { Base } from 'src/common/entities/base.entity';
 import { User } from 'src/modules/auth/entities/user.entity';
 import {
   Column,

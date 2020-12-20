@@ -2,7 +2,7 @@ import { Column, Entity } from 'typeorm';
 import { ApiHideProperty } from '@nestjs/swagger';
 import { genSalt, hash } from 'bcrypt';
 
-import { Base } from 'src/common/entitys/base.entity';
+import { Base } from 'src/common/entities/base.entity';
 import { Scope } from 'src/common/enums/scope.enum';
 import { Exclude } from 'class-transformer';
 

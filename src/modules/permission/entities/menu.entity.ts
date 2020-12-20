@@ -2,7 +2,7 @@ import { Entity, Column, AfterLoad, getManager } from 'typeorm';
 import { ApiHideProperty } from '@nestjs/swagger';
 
 import { Group } from './group.entity';
-import { Base } from 'src/common/entitys/base.entity';
+import { Base } from 'src/common/entities/base.entity';
 
 @Entity()
 export class Menu extends Base {

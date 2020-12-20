@@ -27,12 +27,12 @@ export class NoteService {
       where: {
         id: noteId,
       },
-      relations: ['user', 'tags'],
     });
 
     if (!note) {
       throw new NotFoundException({ code: 'note_not_found' });
     }
+
     if (note.user.id === user.id) {
       return note;
     }
@@ -96,14 +96,22 @@ export class NoteService {
                     END`,
         'pin',
       )
+      .loadRelationCountAndMap('note.isLiked', 'note.likes', 'liked', qb =>
+        qb
+          .andWhere(`liked.liked = :liked`, {
+            liked: true,
+          })
+          .andWhere(`liked.userId = :userId`, {
+            userId: user.id,
+          }),
+      )
       .leftJoinAndSelect('note.user', 'user', 'user.id = :userId', {
         userId: user.id,
       })
-      .leftJoinAndSelect('note.tags','tags')
+      .leftJoinAndSelect('note.tags', 'tags')
       .andWhere(
         `user.id = :userId 
       and note.noteView = :noteView
-
       `,
         {
           userId: user.id,

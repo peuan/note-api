@@ -71,6 +71,8 @@ export class PublicNoteService {
       }),
     );
 
+    note.totalLike = note.totalLike + 1;
+
     return await this.likeNoteRepository.save({ note, user, liked: true });
   }
 
@@ -85,6 +87,8 @@ export class PublicNoteService {
         code: 'note_notfound',
       });
     }
+
+    note.totalLike = note.totalLike - 1;
 
     const like = await this.likeNoteRepository.findOne({ note, user });
 

@@ -27,6 +27,7 @@ export class NoteService {
       where: {
         id: noteId,
       },
+      relations: ['tags', 'user'],
     });
 
     if (!note) {

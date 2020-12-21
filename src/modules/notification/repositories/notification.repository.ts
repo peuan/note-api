@@ -1,3 +1,4 @@
+import { User } from 'src/modules/auth/entities/user.entity';
 import { Repository, EntityRepository } from 'typeorm';
 import { Notification } from '../entities/notification.entity';
 
@@ -21,5 +22,14 @@ export class NotificationRepository extends Repository<Notification> {
         },
       )
       .getOne();
+  }
+
+  async findByIdAndUser(user: User, notificationId: string) {
+    return await this.findOne({
+      where: {
+        user,
+        id: notificationId,
+      },
+    });
   }
 }

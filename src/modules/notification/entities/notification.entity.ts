@@ -43,4 +43,8 @@ export class Notification extends Base {
   dislike() {
     this.active = false;
   }
+
+  readNotification() {
+    this.read = true;
+  }
 }

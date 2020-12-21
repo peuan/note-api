@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Put, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
@@ -23,5 +23,14 @@ export class NotificationController {
     @Query() paginationDto: PaginationDto,
   ) {
     return this.notificationService.getNotifications(user, paginationDto);
+  }
+
+  @Auth()
+  @Put(':notificationId/read')
+  readNotification(
+    @CurrentUser() user: User,
+    @Param('notificationId') notificationId: string,
+  ) {
+    return this.notificationService.readNotification(user, notificationId);
   }
 }

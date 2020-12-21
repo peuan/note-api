@@ -79,4 +79,19 @@ export class NotificationService {
       },
     );
   }
+
+  async readNotification(user: User, notificationId: string) {
+    const notification = await this.notificationRepository.findByIdAndUser(
+      user,
+      notificationId,
+    );
+    if (!notification) {
+      throw new NotFoundException({
+        code: 'notification_notfound',
+      });
+    }
+    notification.readNotification();
+
+    return await this.notificationRepository.save(notification);
+  }
 }

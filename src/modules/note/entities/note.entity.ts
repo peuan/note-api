@@ -24,7 +24,7 @@ export class Note extends Base {
   @ManyToOne(() => User, { eager: true })
   user: User;
 
-  @ManyToMany(() => Tag, { eager: true })
+  @ManyToMany(() => Tag, { eager: false })
   @JoinTable()
   tags: Tag[];
 

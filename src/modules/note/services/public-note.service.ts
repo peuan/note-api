@@ -2,9 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { paginate } from 'nestjs-typeorm-paginate';
-import { NOTE_LIKED } from 'src/common/constants';
+import { NOTE_DISLIKED, NOTE_LIKED } from 'src/common/constants';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { User } from 'src/modules/auth/entities/user.entity';
+import { NoteDislikedEvent } from 'src/modules/notification/events/note-disliked.event';
 import { NoteLikedEvent } from 'src/modules/notification/events/note-liked.event';
 import { Note } from '../entities/note.entity';
 import { NotePrivacy, NoteView } from '../enums/note.enum';
@@ -59,17 +60,28 @@ export class PublicNoteService {
 
     if (like) {
       like.likeNote();
+      if (user.id !== note.user.id) {
+        this.eventEmitter.emit(
+          NOTE_LIKED,
+          new NoteLikedEvent(note.id, {
+            userId: note.user.id,
+            fromUserId: user.id,
+            title: note.note,
+          }),
+        );
+      }
       return await this.likeNoteRepository.save(like);
     }
-
-    this.eventEmitter.emit(
-      NOTE_LIKED,
-      new NoteLikedEvent(note.id, {
-        userId: note.user.id,
-        fromUserId: user.id,
-        title: note.note,
-      }),
-    );
+    if (user.id !== note.user.id) {
+      this.eventEmitter.emit(
+        NOTE_LIKED,
+        new NoteLikedEvent(note.id, {
+          userId: note.user.id,
+          fromUserId: user.id,
+          title: note.note,
+        }),
+      );
+    }
 
     note.totalLike = note.totalLike + 1;
 
@@ -97,6 +109,15 @@ export class PublicNoteService {
     }
 
     like.disLikeNote();
+    if (user.id !== note.user.id) {
+      this.eventEmitter.emit(
+        NOTE_DISLIKED,
+        new NoteDislikedEvent(note.id, {
+          userId: note.user.id,
+          fromUserId: user.id,
+        }),
+      );
+    }
 
     return await this.likeNoteRepository.save(like);
   }

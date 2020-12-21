@@ -8,18 +8,17 @@ import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User extends Base {
-  @Exclude()
-  @Column({ unique: true })
+  @Column({ unique: true, select: false })
   username: string;
 
   @Exclude()
   @ApiHideProperty()
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @Exclude()
   @ApiHideProperty()
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, select: false })
   salt: string;
 
   @Column({ type: 'varchar', length: 100 })
@@ -33,7 +32,7 @@ export class User extends Base {
   email?: string;
 
   @Exclude()
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'jsonb', nullable: true, select: false })
   scopes: Scope[];
 
   async validatePassword(password: string): Promise<boolean> {

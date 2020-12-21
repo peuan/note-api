@@ -7,7 +7,7 @@ import { LikedNote } from '../interfaces/liked-note.interface';
 
 @Entity()
 export class Notification extends Base {
-  @ManyToOne(() => User, { eager: true })
+  @ManyToOne(() => User, { eager: false })
   @JoinColumn({ name: 'userId' })
   user: User;
 
@@ -27,6 +27,9 @@ export class Notification extends Base {
   @Column({ type: 'text' })
   title: string;
 
+  @Column({ type: 'bool', default: true })
+  active: boolean;
+
   note?: Note;
 
   likedNote(payload: LikedNote) {
@@ -35,5 +38,9 @@ export class Notification extends Base {
     this.noteId = payload.noteId;
     this.title = payload.title;
     this.type = NotificationType.LIKED_NOTE;
+  }
+
+  dislike() {
+    this.active = false;
   }
 }

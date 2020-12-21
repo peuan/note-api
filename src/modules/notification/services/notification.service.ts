@@ -3,12 +3,15 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 
-import { NOTE_LIKED } from 'src/common/constants';
+import { NOTE_DISLIKED, NOTE_LIKED } from 'src/common/constants';
 import { User } from 'src/modules/auth/entities/user.entity';
 import { Note } from 'src/modules/note/entities/note.entity';
 import { NoteLikedEvent } from '../events/note-liked.event';
 import { NotificationRepository } from '../repositories/notification.repository';
 import { Notification } from '../entities/notification.entity';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { paginate } from 'nestjs-typeorm-paginate';
+import { NoteDislikedEvent } from '../events/note-disliked.event';
 
 @Injectable()
 export class NotificationService {
@@ -19,7 +22,7 @@ export class NotificationService {
   ) {}
 
   @OnEvent(NOTE_LIKED)
-  async handleNoteLikedEvent({ noteId, payload }: NoteLikedEvent) {
+  private async handleNoteLikedEvent({ noteId, payload }: NoteLikedEvent) {
     const note = await this.entityManager.findOne(Note, noteId);
     const user = await this.entityManager.findOne(User, payload.userId);
     const fromUser = await this.entityManager.findOne(User, payload.fromUserId);
@@ -43,5 +46,37 @@ export class NotificationService {
     });
 
     await this.notificationRepository.save(notification);
+  }
+
+  @OnEvent(NOTE_DISLIKED)
+  private async handleNoteDislikedEvent({
+    noteId,
+    payload: { userId, fromUserId },
+  }: NoteDislikedEvent) {
+    const notification = await this.notificationRepository.findActiveOneByNoteAndUsers(
+      noteId,
+      userId,
+      fromUserId,
+    );
+    if (!notification) {
+      throw new NotFoundException();
+    }
+
+    notification.dislike();
+
+    await this.notificationRepository.save(notification);
+  }
+
+  async getNotifications(user: User, { page, limit }: PaginationDto) {
+    return await paginate(
+      this.notificationRepository,
+      { page, limit },
+      {
+        where: { user, active: true },
+        order: {
+          createDate: 'DESC',
+        },
+      },
+    );
   }
 }

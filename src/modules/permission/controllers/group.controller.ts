@@ -7,12 +7,12 @@ import { Scope } from 'src/common/enums/scope.enum';
 import { UpdateGroupDto } from '../dto/update-group.dto';
 
 @Auth([Scope.SUPER_ADMIN])
-@Controller('group')
-@ApiTags('group')
+@Controller('groups')
+@ApiTags('groups')
 export class GroupController {
   constructor(private groupService: GroupService) {}
 
-  @Get('groups')
+  @Get('')
   getGroups() {
     return this.groupService.getGroups();
   }

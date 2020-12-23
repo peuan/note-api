@@ -7,6 +7,7 @@ import {
   PaginationDto,
 } from 'src/common/dto/pagination.dto';
 import { User } from 'src/modules/auth/entities/user.entity';
+import { LikeNote } from '../entities/like-note.entity';
 import { Note } from '../entities/note.entity';
 import { PublicNoteService } from '../services/public-note.service';
 
@@ -20,6 +21,16 @@ export class PublicNoteController {
   @ApiOkResponse({ type: getManyResponseFor(Note) })
   getNotes(@CurrentUser() user: User, @Query() paginationDto: PaginationDto) {
     return this.publicNoteService.getNotes(user, paginationDto);
+  }
+
+  @Auth()
+  @Get(':noteId/likes')
+  @ApiOkResponse({ type: getManyResponseFor(LikeNote) })
+  getLikesByNoteId(
+    @Query() paginationDto: PaginationDto,
+    @Param('noteId') noteId: string,
+  ) {
+    return this.publicNoteService.getLikesByNoteId(noteId, paginationDto);
   }
 
   @Auth()

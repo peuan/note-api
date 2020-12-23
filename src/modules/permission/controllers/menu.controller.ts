@@ -7,12 +7,12 @@ import { Scope } from 'src/common/enums/scope.enum';
 import { UpdateMenuDto } from '../dto/update-menu.dto';
 
 @Auth([Scope.SUPER_ADMIN])
-@Controller('menu')
-@ApiTags('menu')
+@Controller('menus')
+@ApiTags('menus')
 export class MenuController {
   constructor(private menuService: MenuService) {}
 
-  @Get('menus')
+  @Get('')
   getMenus() {
     return this.menuService.getMenus();
   }

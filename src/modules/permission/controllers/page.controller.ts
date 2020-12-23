@@ -7,8 +7,8 @@ import { Auth } from 'src/common/decorators/auth.decorator';
 import { Scope } from 'src/common/enums/scope.enum';
 
 @Auth([Scope.SUPER_ADMIN])
-@Controller('Page')
-@ApiTags('Page')
+@Controller('pages')
+@ApiTags('pages')
 export class PageController {
   constructor(private pageService: PageService) {}
   @Post()
@@ -19,7 +19,8 @@ export class PageController {
   @Put(':pageId')
   updatePage(
     @Param('pageId') pageId: string,
-    @Body() updatePageDto: UpdatePageDto) {
-    return this.pageService.updatePage(pageId,updatePageDto);
+    @Body() updatePageDto: UpdatePageDto,
+  ) {
+    return this.pageService.updatePage(pageId, updatePageDto);
   }
 }

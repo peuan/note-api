@@ -121,4 +121,28 @@ export class PublicNoteService {
 
     return await this.likeNoteRepository.save(like);
   }
+
+  async getLikesByNoteId(noteId: string, { page, limit }: PaginationDto) {
+    const note = await this.noteRepository.findOne({
+      where: {
+        id: noteId,
+        privacy: NotePrivacy.PUBLIC,
+      },
+    });
+    if (!note) {
+      throw new NotFoundException({
+        code: 'note_notfound',
+      });
+    }
+    return await paginate(
+      this.likeNoteRepository,
+      { page, limit },
+      {
+        where: { note, liked: true },
+        order: {
+          createDate: 'DESC',
+        },
+      },
+    );
+  }
 }

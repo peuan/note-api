@@ -145,4 +145,29 @@ export class PublicNoteService {
       },
     );
   }
+
+  async getPublicNoteById(user: User, noteId: string) {
+    const noteQueryBuilder = this.noteRepository
+      .createQueryBuilder('note')
+      .loadRelationCountAndMap('note.isLiked', 'note.likes', 'liked', qb =>
+        qb
+          .andWhere(`liked.liked = :liked`, {
+            liked: true,
+          })
+          .andWhere(`liked.userId = :userId`, {
+            userId: user.id,
+          }),
+      )
+      .leftJoinAndSelect('note.user', 'user')
+      .where('note.id = :noteId', { noteId });
+
+    const note = await noteQueryBuilder.getOne();
+    if (!note) {
+      throw new NotFoundException({
+        code: 'note_notfound',
+      });
+    }
+
+    return note;
+  }
 }

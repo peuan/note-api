@@ -44,4 +44,13 @@ export class PublicNoteController {
   disLikeNote(@CurrentUser() user: User, @Param('noteId') noteId: string) {
     return this.publicNoteService.disLikeNote(user, noteId);
   }
+
+  @Auth()
+  @Get(':noteId')
+  getPublicNoteById(
+    @CurrentUser() user: User,
+    @Param('noteId') noteId: string,
+  ) {
+    return this.publicNoteService.getPublicNoteById(user, noteId);
+  }
 }
